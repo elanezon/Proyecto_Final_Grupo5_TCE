@@ -1,3 +1,5 @@
+% Medir el tiempo de modulación
+tic();
 modulador = comm.CPMModulator( ...
     'ModulationOrder',2, ...
     'FrequencyPulse','Gaussian', ...
@@ -11,9 +13,12 @@ data = [1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1]; %bit stream de ejemplo
 
 % modular;
 sal = modulador(data.');
+modulation_time = toc();
 
 % Visual
 figure;
 plot(sal);
 xlabel("Frecuencia");
 ylabel("Fase");
+
+disp(['Tiempo de modulación: ' num2str(modulation_time) ' segundos']);
