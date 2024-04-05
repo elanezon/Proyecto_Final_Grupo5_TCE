@@ -4,32 +4,28 @@ symbol_rate = 1000; % Tasa de símbolos en baudios
 modulation_index = 0.5; % Índice de modulación
 frequency_deviation = 5000; % Desviación de frecuencia en Hz
 
-% Señal recibida
-%%%%%received_signal = % Aquí proporcionar la señal recibida
+%channel_signal =;
 
-% Iniciar el temporizador
+% Medir el tiempo de demodulación
 tic();
-
-% Filtro de demodulación GFSK (filtro paso de banda)
-b = gaussdesign(modulation_index, symbol_rate, sampling_rate); % Diseño del filtro gaussiano
-received_signal_filtered = conv(received_signal, b, 'same'); % Filtrar la señal recibida
-
-% Detener el temporizador y obtener el tiempo de ejecución
-elapsed_time = toc();
-
 % Demodulación de la señal GFSK
-demodulated_signal = diff(received_signal_filtered); % Diferenciación para detectar cambios de fase
+gfskDemod = comm.CPMDemodulator( ...
+    'ModulationOrder',2, ...
+    'FrequencyPulse','Gaussian', ...
+    'BandwidthTimeProduct',0.5, ...
+    'ModulationIndex',1, ...
+    'BitOutput',true);
 
-% Umbral para determinar bits
-threshold = mean(demodulated_signal); % Umbral para determinar bits
-demodulated_bits = demodulated_signal > threshold; % Determinar bits según el umbral
+demodulated_bits = gfskDemod(channel_signal);
+demodulation_time = toc();
 
-% Mostrar resultados
+% Visualización de los resultados
 figure;
-plot(demodulated_bits);
+
+subplot(3, 1, 3);
+stem(demodulated_bits);
 title('Bits demodulados');
+xlabel('Muestras');
+ylabel('Valor');
 
-% Mostrar el tiempo de ejecución
-disp(['Tiempo de ejecución del bloque demodulador: ' num2str(elapsed_time) ' segundos']);
-
-% Aquí continuar procesando los bits demodulados
+disp(['Tiempo de demodulación: ' num2str(demodulation_time) ' segundos']);
