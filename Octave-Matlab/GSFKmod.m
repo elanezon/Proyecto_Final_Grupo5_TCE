@@ -17,7 +17,7 @@ modulation_time = toc();
 
 % Visual
 figure;
-plot(sal);
+plot(real(sal));
 xlabel("Frecuencia");
 ylabel("Fase");
 
